@@ -399,9 +399,14 @@ do
         ssl_cert, ssl_key = parse_global_cert_and_key()
       end
 
+      local shm_name = "kong_healthchecks"
+      if kong.cache:get_page() == 2 then
+        shm_name = "kong_healthchecks_2"
+      end
+
       local healthchecker, err = healthcheck.new({
         name = assert(upstream.ws_id) .. ":" .. upstream.name,
-        shm_name = "kong_healthchecks",
+        shm_name = shm_name,
         checks = checks,
         ssl_cert = ssl_cert,
         ssl_key = ssl_key,
